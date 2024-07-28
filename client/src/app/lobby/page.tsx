@@ -59,38 +59,16 @@ export default function Page() {
           data: data
         }),
       });
-
-      if(res){
-         let resp= await res.json();
-         socket.emit("joinRoom", resp.data.id);
-
-         socket.on("welcome", (message) => {
-           // Handle incoming messages
-           console.log(message);
-           router.push(`/${resp.data.id}`);
-         });
+      let resp= await res.json();
+      router.push(`/${resp.data.id}`);
       }
-    }
     catch(error){
        console.log(error);
     }
   }
 
   async function joinSubmit(data: z.infer<typeof JoinRoomSchema>) {
-    try {
-        socket.emit("joinRoom", data.group_id);
-
-        socket.on("welcome", (message) => {
-          // Handle incoming messages
-          console.log(message);
-          router.push(`/${data.group_id}`);
-        });
-
-        // socket.off("welcome");
-      
-    } catch (error) {
-      console.log(error);
-    }
+    router.push(`/${data.group_id}`);
   }
 
   return (
