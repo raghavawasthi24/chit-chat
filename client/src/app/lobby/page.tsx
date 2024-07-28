@@ -32,7 +32,7 @@ export default function Page() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedId = localStorage.getItem("id");
+      const storedId = localStorage.getItem("userId");
       if (storedId) {
         setOwnerId(storedId);
       }
