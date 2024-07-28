@@ -36,13 +36,16 @@ export default function Page() {
   const onSubmit = async (data: any) => {
     console.log(data);
     try {
-        const res = await fetch("http://localhost:1337/api/auth/local/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/local/register`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
 
       if (!res.ok) {
         throw new Error("Register failed");

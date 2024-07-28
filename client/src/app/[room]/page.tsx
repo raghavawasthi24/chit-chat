@@ -102,13 +102,16 @@ export default function Page({ params }: { params: { room: string } }) {
 
       console.log(strapiData);
 
-      const response = await fetch("http://localhost:1337/api/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(strapiData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/messages`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(strapiData),
+        }
+      );
 
       const result = await response.json();
 
@@ -135,7 +138,9 @@ export default function Page({ params }: { params: { room: string } }) {
 
   return (
     <div className="w-screen h-screen flex flex-col">
-      <p className="p-4 bg-blue-500 text-white py-10 text-xl">Start chatting within the group</p>
+      <p className="p-4 bg-blue-500 text-white py-10 text-xl">
+        Start chatting within the group
+      </p>
       <div className="w-full h-full flex">
         <div className="w-1/3 p-4">
           <ActiveUser activeUsers={activeUsers} />

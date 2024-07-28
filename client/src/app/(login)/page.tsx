@@ -34,14 +34,17 @@ export default function Page() {
   const onSubmit = async (data: any) => {
     console.log(data);
     try {
-      const res = await fetch("http://localhost:1337/api/auth/local", {
-        // Ensure the correct API endpoint
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Make sure to include Content-Type header
-        },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/local`,
+        {
+          // Ensure the correct API endpoint
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Make sure to include Content-Type header
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Login failed");
@@ -99,7 +102,7 @@ export default function Page() {
           <Button type="submit">Submit</Button>
         </form>
         <p>
-          Don't have an account?
+          Dont have an account?
           <Link href="/register" className="text-blue-500">
             Signup
           </Link>
