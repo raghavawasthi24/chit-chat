@@ -142,7 +142,7 @@ export default function Page({ params }: { params: { room: string } }) {
         Start chatting within the group
       </p>
       <div className="w-full h-full flex">
-        <div className="w-1/3 p-4">
+        <div className="w-1/3 p-4 border-r-2">
           <ActiveUser activeUsers={activeUsers} />
         </div>
         <div className="w-2/3 flex flex-col p-4">
@@ -166,7 +166,7 @@ export default function Page({ params }: { params: { room: string } }) {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="border border-black"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
