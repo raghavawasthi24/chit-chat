@@ -94,17 +94,17 @@ export default function Page() {
   }
 
   return (
-    <div>
+    <div className="w-screen h-screen flex flex-col justify-center items-center gap-8">
       <Form {...createform}>
         <form
           onSubmit={createform.handleSubmit(onSubmit)}
-          className="flex flex-col gap-8 justify-center items-center"
+          className="w-[500px] flex flex-col gap-8 justify-center items-center"
         >
           <FormField
             control={createform.control}
             name="group_name"
             render={({ field }) => (
-              <FormItem className="w-1/3">
+              <FormItem className="w-full">
                 <FormLabel className="font-semibold text-xl">
                   Room Name
                 </FormLabel>
@@ -115,24 +115,24 @@ export default function Page() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-1/3">
+          <Button type="submit" className="w-full">
             Create
           </Button>
         </form>
       </Form>
 
-      <p className="text-lg">------------or------------</p>
+      <p className="text-sm">------------or------------</p>
 
       <Form {...joinform}> 
         <form
           onSubmit={joinform.handleSubmit(joinSubmit)}
-          className="flex flex-col gap-8 justify-center items-center"
+          className="w-[500px] flex flex-col gap-8 justify-center items-center"
         >
           <FormField
             control={joinform.control}
             name="group_id"
             render={({ field }) => (
-              <FormItem className="w-1/3">
+              <FormItem className="w-full">
                 <FormLabel className="font-semibold text-xl">Room Id</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter room ID" {...field} />
@@ -141,7 +141,7 @@ export default function Page() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-1/3">
+          <Button type="submit" className="w-full">
             Join
           </Button>
         </form>

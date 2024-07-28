@@ -20,6 +20,8 @@ import ActiiveUser from "./components/ActiiveUser";
 const LoginSchema = z.object({
   message: z.string(),
   room: z.string(),
+  username: z.string(),
+  userId: z.string(),
 });
 
 interface Message {
@@ -36,8 +38,10 @@ export default function Page({ params }: { params: { room: string } }) {
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
+      username: localStorage.getItem("username") || "",
       message: "",
       room: params.room,
+      userId: localStorage.getItem("userId") || "",
     },
   });
 
@@ -52,7 +56,7 @@ export default function Page({ params }: { params: { room: string } }) {
       console.log("message", message);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { type: "receiver", message: message.text, sender: "other" },
+        { type: "receiver", message: message.text, sender: message.senderId },
       ]);
     });
 
@@ -64,23 +68,58 @@ export default function Page({ params }: { params: { room: string } }) {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    socket.emit("sendMessage", data);
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "sent", message: data.message, sender: "me" },
-    ]);
+    try {
+      const strapiData = {
+        data: {
+          username: data.username,
+          roomId: data.room,
+          userId: data.userId,
+          message: data.message,
+        },
+      };
+
+      console.log(strapiData);
+
+      const response = await fetch("http://localhost:1337/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(strapiData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${result.message}`);
+      }
+
+       socket.emit("sendMessage", data);
+
+       setMessages((prevMessages) => [
+         ...prevMessages,
+         {
+           type: "sent",
+           message: data.message,
+           sender: localStorage.getItem("userId") || "NA",
+         },
+       ]);
+
+      console.log(result);
+    } catch (error:any) {
+      console.error("Error sending message to Strapi API:", error.message);
+    }
   };
 
   return (
     <div className="w-full flex">
       <ActiiveUser />
 
-
       <div className="w-2/3">
         <div className="flex flex-col">
           {messages.map((message, index) => (
-            <MessageBox data={message} />
+            <MessageBox data={message} key={index} />
           ))}
         </div>
         <Form {...form}>

@@ -405,10 +405,10 @@ export interface ApiMessageMessage extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    messageId: Attribute.UID;
     userId: Attribute.String;
     message: Attribute.Text;
     username: Attribute.String;
+    roomId: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

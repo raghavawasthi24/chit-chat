@@ -12,9 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "messageId": {
-      "type": "uid"
-    },
     "userId": {
       "type": "string"
     },
@@ -22,6 +19,9 @@
       "type": "text"
     },
     "username": {
+      "type": "string"
+    },
+    "roomId": {
       "type": "string"
     }
   }

@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 const LoginSchema = z.object({
-  identifier: z.string(),
+  username:z.string(),
+  email: z.string(),
   password: z.string(),
 });
 
@@ -26,7 +27,8 @@ export default function Page() {
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      identifier: "",
+      username:"",
+      email: "",
       password: "",
     },
   });
@@ -34,28 +36,24 @@ export default function Page() {
   const onSubmit = async (data: any) => {
     console.log(data);
     try {
-      const res = await fetch("http://localhost:1337/api/auth/local", {
-        // Ensure the correct API endpoint
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Make sure to include Content-Type header
-        },
-        body: JSON.stringify(data),
-      });
+        const res = await fetch("http://localhost:1337/api/auth/local/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
       if (!res.ok) {
-        throw new Error("Login failed");
+        throw new Error("Register failed");
       }
 
       const resData = await res.json();
 
       console.log(resData);
 
-      if (resData.jwt) {
-        localStorage.setItem("jwt", resData.jwt);
-        localStorage.setItem("username", resData.user.username);
-        localStorage.setItem("userId", resData.user.id); // Store the JWT token in local storage
-        router.push("/lobby"); // Redirect user after successful login
+      if (resData) {
+        router.push("/"); 
       }
     } catch (error) {
       console.error(error);
@@ -64,7 +62,7 @@ export default function Page() {
 
   return (
     <div className="w-sceen h-screen flex flex-col gap-4 justify-center items-center">
-      <p className="text-2xl font-bold">Login</p>
+      <p className="text-2xl font-bold">Sign Up</p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -72,7 +70,20 @@ export default function Page() {
         >
           <FormField
             control={form.control}
-            name="identifier"
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
@@ -99,9 +110,9 @@ export default function Page() {
           <Button type="submit">Submit</Button>
         </form>
         <p>
-          Don't have an account?
-          <Link href="/register" className="text-blue-500">
-            Signup
+          Already have an account?
+          <Link href="/" className="text-blue-500">
+            Login
           </Link>
         </p>
       </Form>
