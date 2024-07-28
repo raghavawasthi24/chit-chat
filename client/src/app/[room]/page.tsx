@@ -1,75 +1,3 @@
-// "use client";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import React from "react";
-// import { useForm } from "react-hook-form";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { z } from "zod";
-// import {io} from "socket.io-client";
-
-// const LoginSchema = z.object({
-//   message: z.string(),
-//   room:z.string()
-// });
-
-// const socket = io("http://localhost:1337");
-
-// export default function Page() {
-//   const router = useRouter();
-//   const form = useForm({
-//     resolver: zodResolver(LoginSchema),
-//     defaultValues: {
-//       message:"",
-//       room:"6"
-//     },
-//   });
-
-//   const onSubmit = async (data: any) => {
-//     console.log(data);
-
-
-//     socket.emit("sendMessage", data);
-
-//     socket.on("message", (message)=>{
-//         console.log("message",message)
-//     })
-     
-//   };
-
-//   return (
-//     <Form {...form}>
-//       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-//         <FormField
-//           control={form.control}
-//           name="message"
-//           render={({ field }) => (
-//             <FormItem>
-//               <FormLabel>Message</FormLabel>
-//               <FormControl>
-//                 <Input {...field} />
-//               </FormControl>
-//               <FormMessage />
-//             </FormItem>
-//           )}
-//         />
-//         <Button type="submit">Submit</Button>
-//       </form>
-//     </Form>
-//   );
-// }
-
-
-
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,17 +14,24 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { io } from "socket.io-client";
+import MessageBox from "./components/MessageBox";
+import ActiiveUser from "./components/ActiiveUser";
 
 const LoginSchema = z.object({
   message: z.string(),
   room: z.string(),
 });
 
+interface Message {
+  type: string;
+  message: string;
+  sender: string;
+}
+
 const socket = io("http://localhost:1337");
 
-export default function Page({params}:{params:{room:string}}) {
-
- const [messages, setMessages] = useState([]);
+export default function Page({ params }: { params: { room: string } }) {
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -115,9 +50,11 @@ export default function Page({params}:{params:{room:string}}) {
 
     socket.on("message", (message) => {
       console.log("message", message);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { type: "receiver", message: message.text, sender: "other" },
+      ]);
     });
-
-    
 
     return () => {
       socket.off("welcome");
@@ -125,33 +62,46 @@ export default function Page({params}:{params:{room:string}}) {
     };
   }, [form]);
 
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data: any) => {
     console.log(data);
     socket.emit("sendMessage", data);
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { type: "sent", message: data.message, sender: "me" },
+    ]);
   };
 
   return (
-    <Form {...form}>
+    <div className="w-full flex">
+      <ActiiveUser />
 
-        
 
-
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Message</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+      <div className="w-2/3">
+        <div className="flex flex-col">
+          {messages.map((message, index) => (
+            <MessageBox data={message} />
+          ))}
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }
