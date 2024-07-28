@@ -6,7 +6,12 @@ module.exports = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          "connect-src": ["'self'", "https:", "http://localhost:3000"], // Allow connections from your frontend
+          "connect-src": [
+            "'self'",
+            "https:",
+            "http://localhost:3000",
+            "https://chit-chat-sooty.vercel.app/",
+          ], 
           "img-src": ["'self'", "data:", "blob:", "res.cloudinary.com"],
           "media-src": ["'self'", "data:", "blob:", "res.cloudinary.com"],
           upgradeInsecureRequests: null,
@@ -20,7 +25,7 @@ module.exports = [
     config: {
       enabled: true,
       header: "*",
-      origin: ["http://localhost:3000/"],
+      origin: ["http://localhost:3000/", "https://chit-chat-sooty.vercel.app/"],
     },
   },
   "strapi::poweredBy",
