@@ -12,20 +12,14 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
-import { LiaQuestionCircleSolid } from "react-icons/lia";
-// import { loginAction } from "@/actions/Auth/auth";
-// import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-// import { signIn } from "next-auth/react";
-// import Cookies from "js-cookie";
 
 const LoginSchema = z.object({
-  email:z.string(),
-  password:z.string()
-})
+  email: z.string(),
+  password: z.string(),
+});
 
 export default function Page() {
   const router = useRouter();
@@ -36,15 +30,53 @@ export default function Page() {
       password: "",
     },
   });
+
   const onSubmit = async (data: any) => {
     console.log(data);
     try {
-   
-    } catch (error: any) {
-      console.log(JSON.parse(error));
-    //   toast.error(error.message || "An error occurred");
+      const res = await fetch("http://localhost:1337/api/auth/local", {
+        // Ensure the correct API endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Make sure to include Content-Type header
+        },
+        body: JSON.stringify({
+          identifier: "newu@example.com", // Use 'identifier' as required by Strapi
+          password: "password",
+        }),
+      });
+
+      //   const res = await fetch("http://localhost:1337/api/auth/local/register", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       username: "newuser",
+      //       email: "newu@example.com",
+      //       password: "password",
+      //     }),
+      //   });
+
+      if (!res.ok) {
+        throw new Error("Login failed");
+      }
+
+      const resData = await res.json();
+
+      console.log(resData);
+
+      if (resData.jwt) {
+        localStorage.setItem("jwt", resData.jwt);
+        localStorage.setItem("username", resData.user.username);
+        localStorage.setItem("userId", resData.user.id); // Store the JWT token in local storage
+        router.push("/lobby"); // Redirect user after successful login
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
@@ -68,7 +100,7 @@ export default function Page() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,7 +111,3 @@ export default function Page() {
     </Form>
   );
 }
-
-
-
-// d105096675f2dee4231737694b78d8840f60e6a6ce723da941f395e18b2163dbebc65025d28b711355a24ef3c8ff1a74a52be76c306813ab22b32c56b030e5f40944496604cef3a35dab951f05a8734eaeddcb3ed8a14ef1d461c58f75f5e1383eedb3b14acf79a4f6d0bca1d7d57ba9b95e67de2b0b3ef27ef6b1850083f8cd;
