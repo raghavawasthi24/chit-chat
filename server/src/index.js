@@ -6,15 +6,14 @@ module.exports = {
   register({ strapi }) {},
 
   bootstrap(/* { strapi } */) {
-    const io = new Server(strapi.server.httpServer, {
-      cors: {
-        origin: "https://chit-chat-sooty.vercel.app/",
-        methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
-        credentials: true,
-      },
-    });
-
+      const io = new Server(strapi.server.httpServer, {
+        cors: {
+          origin: "https://chit-chat-sooty.vercel.app",
+          methods: ["GET", "POST"],
+          allowedHeaders: ["my-custom-header"],
+          credentials: true,
+        },
+      });
     const activeUsers = {};
 
     io.on("connection", function (socket) {

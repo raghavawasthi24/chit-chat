@@ -35,7 +35,7 @@ interface ActiveUser {
   userId: string;
 }
 
-const socket = io("http://localhost:1337");
+const socket = io("https://chit-chat-te9t.onrender.com");
 
 export default function Page({ params }: { params: { room: string } }) {
   const [messages, setMessages] = useState<Message[]>([]);

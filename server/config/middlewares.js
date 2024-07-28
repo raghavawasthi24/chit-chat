@@ -10,7 +10,7 @@ module.exports = [
             "'self'",
             "https:",
             "http://localhost:3000",
-            "https://chit-chat-sooty.vercel.app/",
+            "https://chit-chat-sooty.vercel.app",
           ], 
           "img-src": ["'self'", "data:", "blob:", "res.cloudinary.com"],
           "media-src": ["'self'", "data:", "blob:", "res.cloudinary.com"],
